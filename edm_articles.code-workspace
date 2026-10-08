@@ -1,0 +1,43 @@
+{
+	"folders": [
+		{
+			"name": "articles",
+			"path": "."
+		},
+		{
+			"name": "edm-studio (converter)",
+			"path": "../edm_converter"
+		},
+		{
+			"name": "core-model (dataplatform)",
+			"path": "../edm_dataplatform"
+		},
+		{
+			"name": "dbt (fabric analytics)",
+			"path": "../edm_fabric_analytics"
+		}
+	],
+	"settings": {
+		"chat.agentSkillsLocations": {
+			".agents/skills": true,
+			".github/skills": true,
+			".claude/skills": true,
+			"~/.agents/skills": true,
+			"~/.copilot/skills": true,
+			"~/.claude/skills": true,
+			"~/.vscode/extensions/synapsevscode.synapse-1.25.0/copilot/skills": true,
+			"~/.vscode/extensions/synapsevscode.synapse-1.26.0/copilot/skills": true
+		},
+		    "workbench.colorCustomizations": {
+      "titleBar.activeBackground": "#90a21f76",
+      "titleBar.activeForeground": "#FFFFFF",
+      "statusBar.background": "#90a21f76",
+      "statusBar.foreground": "#FFFFFF",
+      "statusBar.noFolderBackground": "#90a21f76"
+	},
+	"powershell.cwd": "articles",
+	}
+
+
+
+}
