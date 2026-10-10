@@ -43,6 +43,11 @@ Markdown or HTML transformations in this workflow.
    `../edm_articles_medium/<ArticleStem>/index.html`, that its referenced local
    images were copied to that article's `images/` directory, and that the root
    `index.html` contains each requested article link.
+   Verify that the article starts with a visible `<h1>` matching the HTML
+   `<title>` and `og:title` metadata, with no duplicate of the extracted source
+   title in the body.
+   Verify that the document head includes the article typography styles described
+   below.
 6. Report output paths and warnings. The exporter warns about HTML tables that
    Medium will omit when no infographic image immediately precedes them. Report
    these warnings; do not alter article content or invent replacement graphics
@@ -54,13 +59,21 @@ Markdown or HTML transformations in this workflow.
 - Preserve source image dimensions during export. Do not resample, upscale, crop,
   or regenerate assets as part of this skill.
 - Preserve figure display attributes in the exported HTML. The standard article
-  markup uses `width="700"` and `style="max-width: 100%; height: auto;"` to provide
+  markup uses `width="1200"` for assets below 1600 px wide and `width="1600"`
+  for assets at least 1600 px wide. Pending assets use 1600 provisionally.
+  Retain `style="max-width: 100%; height: auto;"` to provide
   a responsive website display size without changing the image file's resolution.
   Verify that these attributes survive export when present in the source.
-  Medium may ignore or replace them on import; they do not guarantee its layout.
+  Preserve legacy or explicitly custom display widths during export; updating
+  article references belongs to the brief-generation workflow.
+  The website's 680 px body maximum still limits displayed width. Medium may
+  ignore or replace these attributes on import; they do not guarantee its layout.
 - Inspect the pixel dimensions of referenced local infographic assets. The
   designer/Claude production default is 1600 px wide with proportional height;
   it is not a mandatory size for existing assets or Napkin exports.
+  Flag assets below 1200 px for re-export from an editable or vector source.
+  This is a production recommendation, not an export failure or permission to
+  upscale a bitmap. Retain existing assets at native resolution.
 - Napkin's 1x, 2x, and 3x resolution settings are selected manually during image
   export. Check the resulting dimensions rather than assuming a multiplier
   produces a particular width. Do not impose designer pixel-size instructions
@@ -80,12 +93,45 @@ Markdown or HTML transformations in this workflow.
 
 ## Export behavior and limitations
 
-- The exporter removes the internal review block and the intended-audience line.
-- Fenced code is converted to plain `<pre>` markup with language metadata.
+- The exporter removes leading YAML frontmatter, the internal review block, and
+  the intended-audience line.
+- The title comes from the first Markdown H1, or the first paragraph for legacy
+  articles without an H1; if neither exists, the article filename stem is used.
+  Leading article numbering is removed. The extracted title is emitted as a
+  visible `<h1>` at the start of `<article>` and as `<title>` and `og:title`
+  metadata. The original title node is replaced, so it is not duplicated.
+  Check that Medium imports the story title correctly without repeating it in
+  the body; exported HTML does not guarantee the importer's treatment.
+- Fenced code is converted to plain `<pre>` markup with language metadata and
+  explicit `<br>` line breaks. Indentation and internal blank lines are retained;
+  the single terminal newline added by a Markdown fence is omitted.
+  This is an importer compatibility measure, not a verified guarantee of Medium
+  rendering. Check a fresh import for line breaks, indentation, language selection,
+  and extra empty code blocks. Medium may ignore the language metadata; select the
+  language manually if needed. Re-exporting does not update an existing Medium draft.
+- Code blocks have a `#f6f8fa` background, a 1 px solid `#e1e4e8` border,
+  an 8 px radius, 1 rem padding, horizontal scrolling, and 1.5 rem vertical
+  margins. Both plain `<pre>` blocks and inline `<code>` use
+  `"SF Mono", Consolas, Monaco, monospace` at 0.9 em. Nested `pre code`
+  has no background or padding and inherits the block's font size to avoid
+  shrinking twice. These styles apply to the exported website; Medium may
+  ignore them during import.
+- Article pages embed CSS in the document head: body text uses
+  `Charter, Georgia, serif`, 21 px, line-height 1.65, color `#242424`, and a
+  maximum body width of 680 px. H1, H2, and H3 headings use
+  `Inter, Helvetica, Arial, sans-serif` at weight 700. Fonts are not downloaded
+  or embedded; the browser uses the first available font in each stack.
+  These styles affect the exported website; Medium controls typography after
+  import and may ignore the CSS.
 - Local article images are copied and rewritten to public absolute URLs when a
   base URL is supplied.
-- HTML tables remain in the generated GitHub Pages HTML, but Medium's importer
-  omits them. A warning identifies tables without a preceding curated visual.
+- Unmarked HTML tables remain in the generated GitHub Pages HTML, but Medium's
+  importer omits them. A warning identifies tables without a preceding curated
+  visual.
+- Markdown between `<!-- MEDIUM:EXCLUDE:START -->` and
+  `<!-- MEDIUM:EXCLUDE:END -->` is retained in the source but removed from both
+  generated HTML outputs. Markers must be paired and ordered `START` then `END`;
+  malformed markers fail the export.
 - Mermaid fences are exported as code because Medium does not render Mermaid.
   Important diagrams need an exported image before Medium import.
 - The site root index is updated on every `--site-root` run while preserving its

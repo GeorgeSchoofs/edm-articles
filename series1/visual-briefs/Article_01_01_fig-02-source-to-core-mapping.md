@@ -85,11 +85,13 @@ A six-row mapping from Bronze invoice attributes to Core targets. Invoice fields
 
 ## Article figure reference
 
+Measured PNG: 3320 x 1668 px. HTML display width: 1600. Retain the asset at its native resolution.
+
 Article: [Article_01_01](../Article_01_01.md). Placement: immediately before the Bronze attribute / Core target / Interpretation table in "The silver example". Retain the Markdown table as the accessible text equivalent.
 
 ```html
 <figure>
-  <img src="assets/Article_01_01/fig-02-source-to-core-mapping.png" alt="A six-row mapping from Bronze invoice attributes to Core targets. Invoice fields map to sales invoice, whopays and legal entity each map to party and sales invoice party roles, and credited fields map to a sales invoice relationship." width="700" style="max-width: 100%; height: auto;">
+  <img src="assets/Article_01_01/fig-02-source-to-core-mapping.png" alt="A six-row mapping from Bronze invoice attributes to Core targets. Invoice fields map to sales invoice, whopays and legal entity each map to party and sales invoice party roles, and credited fields map to a sales invoice relationship." width="1600" style="max-width: 100%; height: auto;">
   <figcaption>Figure 2. One Bronze invoice row supplies invoice identity, party roles, and relationships to several Core targets.</figcaption>
 </figure>
 ```

@@ -82,11 +82,13 @@ A relationship diagram centred on Party, with Person and Organisation as endurin
 
 ## Article figure reference
 
+PNG pending. HTML display width: 1600 provisionally; reassess the actual PNG width after export.
+
 Article: [Article_01_02](../Article_01_02.md). Placement: after the final paragraph of "Roles describe context and can change over time", before "A small example". The PNG is pending; do not create a placeholder image.
 
 ```html
 <figure>
-  <img src="assets/Article_01_02/fig-02-party-variation.png" alt="A relationship diagram centred on Party, with Person and Organisation as enduring forms, Customer, Employee, Supplier, and Contact as contextual roles, and Sales Customer and HR Employee source records mapping into the shared Party concept." width="700" style="max-width: 100%; height: auto;">
+  <img src="assets/Article_01_02/fig-02-party-variation.png" alt="A relationship diagram centred on Party, with Person and Organisation as enduring forms, Customer, Employee, Supplier, and Contact as contextual roles, and Sales Customer and HR Employee source records mapping into the shared Party concept." width="1600" style="max-width: 100%; height: auto;">
   <figcaption>Figure 2. UDM keeps shared party identity in one concept while types, subtypes, and roles express the differences and contexts that matter.</figcaption>
 </figure>
 ```

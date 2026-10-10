@@ -1,3 +1,16 @@
+---
+title: The enhanced medallion architecture
+tags:
+  - ontology
+  - dbt 
+  - AI
+  - canonical data model
+intended-audience: 
+- manager
+- practitioner
+
+---
+
 <!-- REVIEW:START -->
 > ## Review
 >
@@ -25,11 +38,11 @@
 > _Reviewed against: 01_project_summary, 02_core_principles, 05_style_and_voice, 06_content_boundaries. Date: 2026-09-20._
 <!-- REVIEW:END -->
 
-
 **01.** The enhanced medallion architecture
 
-The medallion architecture is one of the most recognisable architecture models used by data practitioners:
+*The medallion architecture is a popular data warehouse design, but Bronze, Silver, and Gold layers alone don’t define what business data should mean or how it can be reused. This enhanced medallion architecture adds a canonical Core Data Model and clear data contracts to make analytics more consistent, adaptable, and easier to build*
 
+The medallion architecture is one of the most recognisable architecture models used by data practitioners:
 - Bronze: ingestion
 - Silver: transformation
 - Gold: analysis
@@ -39,7 +52,6 @@ The medallion architecture describes where steps from source to target structure
 This creates a problem for a changing data warehouse. Changes require knowledge of existing structures and dependencies, and a lack of shared structure can lead to duplicated models and fragile downstream relationships. AI can help with coding and reasoning, but it needs explicit structure and documentation to produce reliable results.
 
 The proposed architecture adds the following components:
-
 - an enhanced Bronze layer that preserves source data under a clear contract
 - a canonical Core Data Model that represents business concepts
 - a Silver layer that maps source data into the Core Data Model
@@ -48,12 +60,11 @@ The proposed architecture adds the following components:
 Each layer has a separate responsibility and a defined handoff to the next layer:
 
 <figure>
-  <img src="assets/Article_01_01/fig-01-layer-contracts.png" alt="A five-row architecture map reproducing the article's table verbatim. Bronze, Silver, Core Data Model, Gold Engineering, and Gold are listed in order, with each layer's responsibilities and guarantees shown in separate columns." width="700" style="max-width: 100%; height: auto;">
+  <img src="assets/Article_01_01/fig-01-layer-contracts.png" alt="A five-row architecture map reproducing the article's table verbatim. Bronze, Silver, Core Data Model, Gold Engineering, and Gold are listed in order, with each layer's responsibilities and guarantees shown in separate columns." width="1600" style="max-width: 100%; height: auto;">
   <figcaption>Figure 1. Each layer owns a distinct responsibility and provides a defined guarantee to the next stage of the enhanced medallion architecture.</figcaption>
 </figure>
 
-
-
+<!-- MEDIUM:EXCLUDE:START -->
 | Layer | Owns | Guarantees to the next layer |
 |---|---|---|
 | Bronze | Source fidelity, ingestion metadata, history, and change capture | Complete and consistently typed source data that can be reprocessed without returning to the source system |
@@ -61,10 +72,10 @@ Each layer has a separate responsibility and a defined handoff to the next layer
 | Core Data Model | Canonical entities, business meaning, relationships, keys, and definitions | A reusable and documented business structure that is independent of any single source or analytical use case |
 | Gold Engineering | Consumption-specific joins, reshaping, history handling, and technical preparation | Stable inputs for dimensions, facts, semantic models, and other analytical structures |
 | Gold | End-user dimensions, facts, metrics, KPIs, and semantic definitions | Structures that are ready for reporting, analysis, and AI-assisted querying |
+<!-- MEDIUM:EXCLUDE:END -->
 
 ### The cost of the additional structure
 The additional layers introduce real delivery and governance costs:
-
 - modelling effort is required to define canonical entities, relationships, keys, and history behaviour before implementation can begin
 - every source requires a governed mapping into the Core Data Model, including decisions about meaning, grain, identity, and missing values
 - contracts and documentation must be versioned, reviewed, validated, and kept aligned with generated physical
@@ -80,7 +91,6 @@ The trade-offs are worthwhile when the warehouse serves multiple sources, busine
 The Bronze layer is where source data lands. Its purpose is to preserve source fidelity while providing consistent metadata and history for downstream processing.
 
 The Bronze layer has the following requirements:
-
 - preserve a permanent store of source data and its history
 - capture source changes, including soft and hard deletes
 - minimise modifications to source structures
@@ -106,7 +116,6 @@ select
     a.[record_source]
 from [eq_wal_products_myprompts_billguides] a
 ```
-
 ### The new canonical (Core) Data Model
 The Core Data Model is the heart of the architecture. It contains structures with defined business meaning, relationships, keys, and history behaviour.
 
@@ -115,13 +124,11 @@ For the invoice example, the Core can contain a sales invoice, invoice lines, in
 The logical layer documents these structures and provides the basis for the physical YAML layer and generated implementation artefacts. It is also represented as an OKF bundle so that the same definitions can be used by people and AI systems.
 
 ##### YAML example of sales_invoice
-
 ```yaml
 id: logical.sales_invoice
 label: Sales invoice
 entity_type: regular
 derived_from: conceptual.sales_invoice
-
 keys:
   primary:
     - sales_invoice_key
@@ -129,7 +136,6 @@ keys:
     - sales_invoice_id
     - record_source
     - sales_invoice_type_key
-
 columns:
   - name: sales_invoice_key
     type: string
@@ -140,7 +146,6 @@ columns:
   - name: invoicedate
     type: datetime
     description: Date of the invoice
-
 relationships:
   - name: contains
     target: sales_invoice_lines
@@ -148,13 +153,11 @@ relationships:
   - name: involves
     target: sales_invoice_party_roles
     cardinality: 1:N
-
 history:
   strategy: driving_key_set
   driving_keys:
     - sales_invoice_key
 ```
-
 The generated documentation in markdown files captures entity descriptions, keys, relationships, columns, history behaviour, and Silver ingestion templates. It serves both humans and AI.
 
 ### The Silver layer: contract-driven ingestion
@@ -176,7 +179,6 @@ This gives Silver a consistent responsibility: source interpretation happens in 
 
 #### The silver example
 The billguides table contains the following attributes:
-
 - [id] --> surrogate key in source system 
 - [sid] --> id for the debtor (a party in a role)
 - [setupdate] --> the date invoice has been setup (an attribute of the invoice)
@@ -192,12 +194,12 @@ The billguides table contains the following attributes:
 - [credit_id] --> id of the credit invoice (a relationship with another invoice)
 
 This one table feeds several canonical entities:
-
 <figure>
-  <img src="assets/Article_01_01/fig-02-source-to-core-mapping.png" alt="A six-row mapping from Bronze invoice attributes to Core targets. Invoice fields map to sales invoice, whopays and legal entity each map to party and sales invoice party roles, and credited fields map to a sales invoice relationship." width="700" style="max-width: 100%; height: auto;">
+  <img src="assets/Article_01_01/fig-02-source-to-core-mapping.png" alt="A six-row mapping from Bronze invoice attributes to Core targets. Invoice fields map to sales invoice, whopays and legal entity each map to party and sales invoice party roles, and credited fields map to a sales invoice relationship." width="1600" style="max-width: 100%; height: auto;">
   <figcaption>Figure 2. One Bronze invoice row supplies invoice identity, party roles, and relationships to several Core targets.</figcaption>
 </figure>
 
+<!-- MEDIUM:EXCLUDE:START -->
 | Bronze attribute | Core target | Interpretation |
 |---|---|---|
 | `invoice`, `invoicedate`, `amount` | `sales_invoice` | Invoice identity, date, and amount |
@@ -206,13 +208,12 @@ This one table feeds several canonical entities:
 | `legal_entity` | `party` | Identifies a party |
 | `legal_entity` | `sales_invoice_party_roles` | Party is the invoice legal entity |
 | `credited`, `credit_id` | `sales_invoice_relationship` | Describes a relationship between invoices |
-
+<!-- MEDIUM:EXCLUDE:END -->
 
 The same Bronze row can therefore contribute to an invoice entity, one or more party entities, and the relationships between them. Each target has its own predefined template and independent Silver mapping.
 
 #### The generic ingestion template for sales invoice
 The generated template defines the required output columns and key components. The source-specific SQL fills the template with the relevant Bronze attributes and business rules.
-
 ```sql
 -- Silver output: one row per sales invoice
 select
@@ -230,7 +231,6 @@ from bronze_billguides a
 The output conforms to the `sales_invoice` contract. The source-specific mapping supplies the values; the target structure comes from the predefined template.
 
 The party-role mapping demonstrates a different transformation pattern. Source columns become rows in the canonical relationship structure:
-
 ```sql
 -- Silver output: one row per invoice-party-role relationship
 select
@@ -245,7 +245,6 @@ unpivot (
 join role_definition
     on roles.source_attribute = role_definition.source_attribute
 ```
-
 `whopays` and `legal_entity` are source attributes, while the Core Data Model represents them as relationships. Silver converts those columns into rows in `sales_invoice_party_roles` and assigns each relationship a controlled role such as `invoice payer` or `invoice legal entity`.
 
 ### Gold built on top of the Core Data Model
@@ -265,10 +264,9 @@ The invoice details are to be found in the sales invoice entity. The parties rel
 To flatten the structure we need to pivot the results of sales invoice party role for each type that we select. The example outputs one row per invoice, with the parties that are related to it.
 
 ``` sql
-
 with cte_sales_party_roles_selection as (
   select
-      sipr.sales_invoice_hk
+    sipr.sales_invoice_hk
     , sipr.party_hk
     , siprt.business_key as sales_invoice_party_roles_type_business_key
   from [sales_invoice_party_roles] sipr
@@ -276,7 +274,6 @@ with cte_sales_party_roles_selection as (
     on sipr.sales_invoice_party_role_types_hk = siprt.sales_invoice_party_role_types_hk
   where siprt.business_key in ('invoice payer', 'invoice legal entity', [invoice location])
 )
-
 , cte_sales_party_roles as (
   select
       p.sales_invoice_hk
@@ -288,7 +285,6 @@ with cte_sales_party_roles_selection as (
     for sales_invoice_party_roles_type_business_key in ([invoice payer], [invoice legal entity], [invoice location])
   ) p
 )
-
 select si.sales_invoice_hk
   , si.business_key as invoice
   , si.invoicedate
@@ -299,7 +295,6 @@ from [sales_invoice] si
     left join [party]  pip on ipr.party_hk_invoice_payer = pip.party_hk
     left join [party]  ple on ipr.party_hk_legal_entity = ple.party_hk
 ```
-
 #### AI usage
 The structured Core Data Model is the basis that AI can use to generate Gold models. The business concepts listed are recognisable, which allows reasoning and generation of code. 
 

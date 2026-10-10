@@ -104,11 +104,13 @@ A flow diagram showing the billguides source table branching through Silver mapp
 
 ## Article figure reference
 
+Measured PNG: 3380 x 1620 px. HTML display width: 1600. Retain the asset at its native resolution.
+
 Article: [Article_01_02](../Article_01_02.md). Placement: after the source-to-UDM mapping table in "From a source table to a UDM". Retain the existing Mermaid diagram and Markdown table.
 
 ```html
 <figure>
-  <img src="assets/Article_01_02/fig-01-source-to-udm.png" alt="A flow diagram showing the billguides source table branching through Silver mappings into sales invoice, party roles, and invoice relationship entities, which then support a Gold invoice dimension." width="700" style="max-width: 100%; height: auto;">
+  <img src="assets/Article_01_02/fig-01-source-to-udm.png" alt="A flow diagram showing the billguides source table branching through Silver mappings into sales invoice, party roles, and invoice relationship entities, which then support a Gold invoice dimension." width="1600" style="max-width: 100%; height: auto;">
   <figcaption>Figure 1. A single invoice source can be mapped into several reusable UDM entities and relationships that support downstream Gold models.</figcaption>
 </figure>
 ```

@@ -17,15 +17,73 @@ REVIEW_BLOCK = re.compile(
     r"<!--\s*REVIEW:START\s*-->.*?<!--\s*REVIEW:END\s*-->",
     re.DOTALL | re.IGNORECASE,
 )
+FRONTMATTER_BLOCK = re.compile(
+    r"\A(?:\ufeff)?---[ \t]*\r?\n.*?\r?\n---[ \t]*(?:\r?\n|$)",
+    re.DOTALL,
+)
+MEDIUM_EXCLUDE_MARKER = re.compile(
+    r"<!--\s*MEDIUM:EXCLUDE:(START|END)\s*-->",
+    re.IGNORECASE,
+)
 AUDIENCE_LINE = re.compile(
     r"^\*{0,2}Intended audience:\*{0,2}.*$", re.MULTILINE | re.IGNORECASE
 )
 TITLE_NUMBER = re.compile(r"^\s*\d+(?:\.\d+)*[.)]?\s*")
+ARTICLE_STYLES = """body {
+    font-family: Charter, Georgia, serif;
+    font-size: 21px;
+    line-height: 1.65;
+    color: #242424;
+    max-width: 680px;
+}
+
+h1, h2, h3 {
+    font-family: Inter, Helvetica, Arial, sans-serif;
+    font-weight: 700;
+}
+
+pre {
+    background: #f6f8fa;
+    border: 1px solid #e1e4e8;
+    border-radius: 8px;
+    padding: 1rem;
+    overflow-x: auto;
+    margin: 1.5rem 0;
+}
+
+pre, code {
+    font-family: "SF Mono", Consolas, Monaco, monospace;
+    font-size: 0.9em;
+}
+
+pre code {
+    background: none;
+    padding: 0;
+    font-size: inherit;
+}
+"""
 
 
 def clean_article_markdown(source: str) -> str:
-    """Remove repository-only editorial metadata from an article."""
+    """Remove editorial metadata and marked publication-only source sections."""
+    source = FRONTMATTER_BLOCK.sub("", source)
     source = REVIEW_BLOCK.sub("", source)
+    markers = list(MEDIUM_EXCLUDE_MARKER.finditer(source))
+    if len(markers) % 2:
+        raise ValueError("Unmatched MEDIUM:EXCLUDE marker in article Markdown")
+
+    retained = []
+    cursor = 0
+    for start_marker, end_marker in zip(markers[::2], markers[1::2]):
+        if (
+            start_marker.group(1).casefold() != "start"
+            or end_marker.group(1).casefold() != "end"
+        ):
+            raise ValueError("MEDIUM:EXCLUDE markers must be ordered START then END")
+        retained.append(source[cursor : start_marker.start()])
+        cursor = end_marker.end()
+    retained.append(source[cursor:])
+    source = "".join(retained)
     source = AUDIENCE_LINE.sub("", source)
     return source.strip()
 
@@ -46,7 +104,11 @@ def normalize_code_blocks(soup: BeautifulSoup) -> None:
             "class": [f"language-{language}"],
             "data-code-block-lang": language,
         }
-        pre.string = content
+        lines = content.removesuffix("\n").split("\n")
+        for index, line in enumerate(lines):
+            if index:
+                pre.append(soup.new_tag("br"))
+            pre.append(NavigableString(line))
 
     for wrapper in soup.select("div.codehilite, div.sourceCode"):
         wrapper.unwrap()
@@ -99,6 +161,8 @@ def normalize_headings(soup: BeautifulSoup) -> None:
 def remove_inter_element_whitespace(soup: BeautifulSoup) -> None:
     """Prevent importers from interpreting formatting whitespace as blank blocks."""
     for node in list(soup.find_all(string=True)):
+        if node.find_parent(["pre", "code"]) is not None:
+            continue
         if isinstance(node, NavigableString) and not node.strip():
             node.extract()
 
@@ -150,8 +214,14 @@ def render_article(source_path: Path, output_dir: Path, base_url: str | None = N
     open_graph_title["property"] = "og:title"
     open_graph_title["content"] = title
     document.head.append(open_graph_title)
+    style_element = document.new_tag("style")
+    style_element.string = ARTICLE_STYLES
+    document.head.append(style_element)
 
     article = document.new_tag("article")
+    visible_title = document.new_tag("h1")
+    visible_title.string = title
+    article.append(visible_title)
     for child in list(body.contents):
         article.append(child.extract())
     document.body.append(article)

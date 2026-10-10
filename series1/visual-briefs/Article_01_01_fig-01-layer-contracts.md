@@ -92,11 +92,13 @@ A five-row architecture map reproducing the article's table verbatim. Bronze, Si
 
 ## Article figure reference
 
+Measured PNG: 2400 x 2466 px. HTML display width: 1600. Retain the asset at its native resolution.
+
 Article: [Article_01_01](../Article_01_01.md). Placement: immediately before the Layer / Owns / Guarantees table. Retain the Markdown table as the accessible text equivalent.
 
 ```html
 <figure>
-  <img src="assets/Article_01_01/fig-01-layer-contracts.png" alt="A five-row architecture map reproducing the article's table verbatim. Bronze, Silver, Core Data Model, Gold Engineering, and Gold are listed in order, with each layer's responsibilities and guarantees shown in separate columns." width="700" style="max-width: 100%; height: auto;">
+  <img src="assets/Article_01_01/fig-01-layer-contracts.png" alt="A five-row architecture map reproducing the article's table verbatim. Bronze, Silver, Core Data Model, Gold Engineering, and Gold are listed in order, with each layer's responsibilities and guarantees shown in separate columns." width="1600" style="max-width: 100%; height: auto;">
   <figcaption>Figure 1. Each layer owns a distinct responsibility and provides a defined guarantee to the next stage of the enhanced medallion architecture.</figcaption>
 </figure>
 ```

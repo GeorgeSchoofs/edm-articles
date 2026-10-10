@@ -84,11 +84,13 @@ A workflow separates human-reviewed modelling from automated generation. Modeler
 
 ## Article figure reference
 
+Measured PNG: 1248 x 722 px. HTML display width: 1200. Retain the asset at its native resolution.
+
 Article: [Article_01_03](../Article_01_03.md). Placement: after the introductory sentence in "From metadata to generated artefacts".
 
 ```html
 <figure>
-  <img src="assets/Article_01_03/fig-02-reviewed-generation-path.png" alt="A workflow separates human-reviewed modelling from automated generation. Modelers review the conceptual vocabulary and enrich and approve logical YAML. The approved contract generates physical YAML and a core table contract, OKF documentation, and Silver ingestion templates, which are then checked with schema and cross-layer validation." width="700" style="max-width: 100%; height: auto;">
+  <img src="assets/Article_01_03/fig-02-reviewed-generation-path.png" alt="A workflow separates human-reviewed modelling from automated generation. Modelers review the conceptual vocabulary and enrich and approve logical YAML. The approved contract generates physical YAML and a core table contract, OKF documentation, and Silver ingestion templates, which are then checked with schema and cross-layer validation." width="1200" style="max-width: 100%; height: auto;">
   <figcaption>Figure 2. Human approval establishes the logical contract; generation and validation carry it into aligned implementation and documentation artefacts.</figcaption>
 </figure>
 ```

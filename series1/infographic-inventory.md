@@ -1,5 +1,23 @@
 # Infographic Inventory
 
+## Image sizing migration
+
+Measured on 2026-10-08. Article and brief reference widths are 1200 for PNGs
+below 1600 px wide, 1600 for PNGs at least 1600 px wide, and provisionally 1600
+for pending PNGs. Existing image files and lifecycle statuses are unchanged.
+
+The following PNGs are below the 1200 px production threshold and are flagged
+for re-export from an editable or vector source; do not upscale the bitmaps:
+
+- Article_00_01 / fig-01-medallion-gap: 516 x 696 px.
+- Article_00_01 / fig-02-enhanced-medallion: 756 x 670 px.
+- Article_00_01 / fig-03-transformation-journey: 846 x 486 px.
+- Article_01_03 / fig-01-party-three-layers: 652 x 432 px.
+
+Article_01_02 / fig-02-party-variation remains pending. Display attributes do
+not increase image resolution. Readability at 700 px and 350 px preview widths
+has not been visually checked in this migration.
+
 | Article | Figure | Status | Source section | Brief | Asset | Caption |
 |---|---|---|---|---|---|---|
 | Article_00_01 | fig-01-medallion-gap | Generated | The medallion architecture; Lacking documentation | visual-briefs/Article_00_01_fig-01-medallion-gap.md | assets/Article_00_01/fig-01-medallion-gap.png | Figure 1. Bronze, Silver, and Gold define transformation stages; explicit information architecture defines data shape, relationships, and meaning. |

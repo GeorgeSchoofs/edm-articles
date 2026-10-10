@@ -1,9 +1,14 @@
 {
 	"folders": [
+	
 		{
 			"name": "articles",
 			"path": "."
 		},
+		{
+			"name": "medium-articles",
+			"path": "../edm_articles_medium"
+		},	
 		{
 			"name": "edm-studio (converter)",
 			"path": "../edm_converter"

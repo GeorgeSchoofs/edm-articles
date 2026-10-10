@@ -1,3 +1,16 @@
+---
+title: Metadata-driven modelling of the core data layer
+tags:
+  - ontology
+  - dbt 
+  - AI
+  - canonical data model
+intended-audience: 
+- practitioner
+
+---
+
+
 <!-- REVIEW:START -->
 > ## Review
 >
@@ -25,13 +38,9 @@
 <!-- REVIEW:END -->
 
 # Metadata-driven modelling of the core data layer
-
-**Intended audience:** Technical
-
-The previous articles established the need for a documented Core Data Model and explained why Universal Data Model principles are useful for representing business meaning. This article describes how that model is implemented.
+*The previous articles established the need for a documented Core Data Model and explained why Universal Data Model principles are useful for representing business meaning. This article describes how YAML can implement the model.*
 
 The implementation separates the model into conceptual, logical, and physical layers. Each layer answers a different question and gives each decision one authoritative home:
-
 - **Conceptual:** What business concepts and relationships exist?
 - **Logical:** What is the complete business structure, including attributes, keys, and history rules?
 - **Physical:** How is that logical contract implemented in a target platform?
@@ -39,7 +48,7 @@ The implementation separates the model into conceptual, logical, and physical la
 The separation keeps business meaning independent from implementation detail. It also creates a controlled generation path: conceptual definitions provide the vocabulary, logical YAML provides the semantic contract, and physical YAML projects that contract into a Fabric-compatible structure. When meaning is introduced in pipelines and manually maintained documentation there is a constant need to deal with conflicting definitions.
 
 <figure>
-  <img src="assets/Article_01_03/fig-01-party-three-layers.png" alt="A three-stage diagram follows Party through the conceptual, logical, and physical layers. The conceptual layer defines business concepts and relationships, the logical layer adds attributes, keys, mappings, and history rules, and the physical layer adds target-specific types, hashes, tables, and ETL fields." width="700" style="max-width: 100%; height: auto;">
+  <img src="assets/Article_01_03/fig-01-party-three-layers.png" alt="A three-stage diagram follows Party through the conceptual, logical, and physical layers. The conceptual layer defines business concepts and relationships, the logical layer adds attributes, keys, mappings, and history rules, and the physical layer adds target-specific types, hashes, tables, and ETL fields." width="1200" style="max-width: 100%; height: auto;">
   <figcaption>Figure 1. The Party concept moves from business vocabulary to a complete semantic contract and then to a target-specific implementation.</figcaption>
 </figure>
 
@@ -54,7 +63,6 @@ The conceptual layer describes the business language of the model. In the implem
 A simplified conceptual definition for Party looks like this:
 
 ```yaml
-
 id: conceptual.party
 label: Party
 name: conceptual.party
@@ -78,7 +86,6 @@ relationships:
       source: conceptual.party
       target: conceptual.party_contact_mechanism
       cardinality: 1:N
-
 ```
 
 The complete implementation contains more relationships, but the important boundary is visible in this excerpt. The conceptual layer defines the entity, its description, its UDM classification, and the cardinality of its relationships. It does not define columns, hash components, SQL types, table names, or ETL system fields.
@@ -98,7 +105,6 @@ The logical layer turns the conceptual vocabulary into a complete business struc
 The logical definition of Party includes a generated hash-key placeholder, a business key, and business attributes:
 
 ```yaml
-
 id: logical.party
 label: Party
 name: logical.party
@@ -115,7 +121,6 @@ keys:
             - party_id
             - record_source
             - party_type_key
-
 columns:
     - id: logical.party.party_key
       name: party_key
@@ -133,7 +138,6 @@ columns:
       name: party_name
       description: Name for the party
       dataType: string
-
 ```
 
 The logical layer also carries the relationships from the conceptual model, now with explicit attribute mappings. For example, the Party-to-Party-Role relationship maps `party.party_key` to `party_roles.party_key` with cardinality `1:N`.
@@ -148,14 +152,12 @@ The physical layer implements the logical contract for a target platform. The Pa
 The physical file resolves generic logical types into Fabric SQL types and adds implementation details. A simplified example for a `party` is: :
 
 ```yaml
-
 id: physical.party
 entity: party
 table: core.party
 schema: core
 derivedfrom:
 - logical.party
-
 business_columns:
     - name: party_id
       logical_type: string
@@ -169,7 +171,6 @@ business_columns:
       nullable: true
       derivedfrom:
       - logical.party.party_name
-
 hash_columns:
     - name: party_hk
       hash_type: primary_key
@@ -183,7 +184,6 @@ hash_columns:
       hash_type: foreign_key
       nullable: false
       ref_entity: party_type
-
 system_columns:
     - name: load_datetime
       physical_type: datetime2(3)
@@ -197,7 +197,6 @@ system_columns:
     - name: process_run_id
       physical_type: varchar(1024)
       nullable: false
-
 ```
 
 The physical definition adds the Data Vault 2.0 hash implementation. `party_hk` is a `varchar(64)` surrogate key derivedfrom `party_id`, `record_source`, and the Party Type reference. `party_type_hk` is a foreign-key hash pointing to `party_type`.
@@ -208,9 +207,8 @@ The boundary matters. A Fabric datatype, table name, hash component, or CDC flag
 
 ## From metadata to generated artefacts
 The three layers form a generation path rather than three independent descriptions:
-
 <figure>
-  <img src="assets/Article_01_03/fig-02-reviewed-generation-path.png" alt="A workflow separates human-reviewed modelling from automated generation. Modelers review the conceptual vocabulary and enrich and approve logical YAML. The approved contract generates physical YAML and a core table contract, OKF documentation, and Silver ingestion templates, which are then checked with schema and cross-layer validation." width="700" style="max-width: 100%; height: auto;">
+  <img src="assets/Article_01_03/fig-02-reviewed-generation-path.png" alt="A workflow separates human-reviewed modelling from automated generation. Modelers review the conceptual vocabulary and enrich and approve logical YAML. The approved contract generates physical YAML and a core table contract, OKF documentation, and Silver ingestion templates, which are then checked with schema and cross-layer validation." width="1200" style="max-width: 100%; height: auto;">
   <figcaption>Figure 2. Human approval establishes the logical contract; generation and validation carry it into aligned implementation and documentation artefacts.</figcaption>
 </figure>
 

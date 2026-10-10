@@ -79,11 +79,13 @@ A horizontal transformation journey from a legacy warehouse through a canonical 
 
 ## Article figure reference
 
+Measured PNG: 846 x 486 px. HTML display width: 1200. Flagged for re-export from the editable or vector source because the PNG is below 1200 px wide; do not upscale the bitmap.
+
 Article: [Article_00_01](../Article_00_01.md). Placement: after the final paragraph of "Automation with Python and AI".
 
 ```html
 <figure>
-  <img src="assets/Article_00_01/fig-03-transformation-journey.png" alt="A horizontal transformation journey from a legacy warehouse through a canonical core data model and YAML-based layers to generated data structures, documentation, and AI-ready analytics." width="700" style="max-width: 100%; height: auto;">
+  <img src="assets/Article_00_01/fig-03-transformation-journey.png" alt="A horizontal transformation journey from a legacy warehouse through a canonical core data model and YAML-based layers to generated data structures, documentation, and AI-ready analytics." width="1200" style="max-width: 100%; height: auto;">
   <figcaption>Figure 3. The journey builds an AI-ready data foundation by making business meaning explicit and carrying it through modelling, generation, and documentation.</figcaption>
 </figure>
 ```

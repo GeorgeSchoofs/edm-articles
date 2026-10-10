@@ -78,11 +78,13 @@ A five-layer architecture showing defined, historised source data flowing throug
 
 ## Article figure reference
 
+Measured PNG: 756 x 670 px. HTML display width: 1200. Flagged for re-export from the editable or vector source because the PNG is below 1200 px wide; do not upscale the bitmap.
+
 Article: [Article_00_01](../Article_00_01.md). Placement: after the paragraph explaining clearer responsibilities, reduced interdependencies, and parallel work in "The enhanced medallion architecture".
 
 ```html
 <figure>
-  <img src="assets/Article_00_01/fig-02-enhanced-medallion.png" alt="A five-layer architecture showing defined, historised source data flowing through source-to-canonical mapping, a documented Core Data Model, Gold Engineering, and Gold, where end users consume described metrics and KPIs." width="700" style="max-width: 100%; height: auto;">
+  <img src="assets/Article_00_01/fig-02-enhanced-medallion.png" alt="A five-layer architecture showing defined, historised source data flowing through source-to-canonical mapping, a documented Core Data Model, Gold Engineering, and Gold, where end users consume described metrics and KPIs." width="1200" style="max-width: 100%; height: auto;">
   <figcaption>Figure 2. A documented Core Data Model separates source-to-canonical mapping from the preparation of data for BI, data science, and end-user metrics.</figcaption>
 </figure>
 ```

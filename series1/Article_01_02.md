@@ -1,3 +1,17 @@
+---
+title: Why AI Reasons Better with a Universal Data Model
+tags:
+  - ontology
+  - dbt 
+  - AI
+  - canonical data model
+intended-audience: 
+- manager
+- practitioner
+
+---
+
+
 <!-- REVIEW:START -->
 > ## Review
 >
@@ -24,9 +38,9 @@
 > _Reviewed against: 01_project_summary, 02_core_principles, 05_style_and_voice, 06_content_boundaries. Date: 2026-09-28._
 <!-- REVIEW:END -->
 
-Intended audience: both business and practitioners
-
 # Why AI Reasons Better with a Universal Data Model
+*An AI-ready data warehouse needs more than organised tables: it needs clear definitions of business concepts and how they relate. This article explains how a Universal Data Model (UDM) provides that shared structure, how it compares with an ontology, and what it can give AI systems to work with.*
+
 The previous article introduced the core data model as the layer between source-oriented transformation and analytical consumption. This article explains one way to design that layer: the Universal Data Model, or UDM.
 
 A UDM describes an organisation's data through stable business concepts. It gives those concepts precise definitions, identifies their relationships, and records the rules that distinguish one form of a concept from another. The result is a model that can absorb new source systems without adopting each source system's vocabulary as the warehouse vocabulary. That property matters to people building the warehouse. It also matters to AI systems. An AI tool can reason more reliably when the data model expresses what its entities mean, how they relate, and which distinctions carry business significance.
@@ -54,11 +68,6 @@ A role describes how a party participates in a particular business context. A pa
 
 The distinction prevents a common source-driven design from leaking into the core model. Separate `customer` and `employee` tables may make sense inside operational applications, yet they hide that the same human being can be both. A UDM represents the shared party once and attaches the relevant classifications and relationships.
 
-<figure>
-  <img src="assets/Article_01_02/fig-02-party-variation.png" alt="A relationship diagram centred on Party, with Person and Organisation as enduring forms, Customer, Employee, Supplier, and Contact as contextual roles, and Sales Customer and HR Employee source records mapping into the shared Party concept." width="700" style="max-width: 100%; height: auto;">
-  <figcaption>Figure 2. UDM keeps shared party identity in one concept while types, subtypes, and roles express the differences and contexts that matter.</figcaption>
-</figure>
-
 ## A small example
 Consider two source systems. A sales system supplies a `Customer` table. An HR system supplies an `Employee` table. Both contain names, addresses, email addresses, and identifiers. A source-led warehouse would likely retain two separate structures and create matching transformation logic for every downstream model.
 
@@ -77,8 +86,13 @@ Source identifiers, provenance, and source-specific attributes remain available 
 ## From a source table to a UDM
 Consider a source table called `billguides`. It contains invoice attributes, party identifiers, and references to related invoices. A UDM does not preserve this as one source-shaped business structure. It interprets the attributes as several related business concepts.
 
-```mermaid
+<figure>
+  <img src="assets/Article_01_02/fig-02-party-variation.png" alt="A relationship diagram centred on Party, with Person and Organisation as enduring forms, Customer, Employee, Supplier, and Contact as contextual roles, and Sales Customer and HR Employee source records mapping into the shared Party concept." width="1600" style="max-width: 100%; height: auto;">
+  <figcaption>Figure 2. UDM keeps shared party identity in one concept while types, subtypes, and roles express the differences and contexts that matter.</figcaption>
+</figure>
 
+<!-- MEDIUM:EXCLUDE:START -->
+```mermaid
 flowchart LR
 B[Source: billguides]
 C1[Core: sales_invoice]
@@ -102,7 +116,6 @@ class B source;
 class C1,C2,C3,C4 core;
 class G gold;
 linkStyle default stroke:#a3a3a3,stroke-width:2px;
-
 ```
 
 | Source attribute | UDM target | Interpretation |
@@ -113,9 +126,10 @@ linkStyle default stroke:#a3a3a3,stroke-width:2px;
 | `legal_entity` | `party` | Identifies a party |
 | `legal_entity` | `sales_invoice_party_roles` | Party is the invoice legal entity |
 | `credited`, `credit_id` | `sales_invoice_relationship` | Describes a relationship between invoices |
+<!-- MEDIUM:EXCLUDE:END -->
 
 <figure>
-  <img src="assets/Article_01_02/fig-01-source-to-udm.png" alt="A flow diagram showing the billguides source table branching through Silver mappings into sales invoice, party roles, and invoice relationship entities, which then support a Gold invoice dimension." width="700" style="max-width: 100%; height: auto;">
+  <img src="assets/Article_01_02/fig-01-source-to-udm.png" alt="A flow diagram showing the billguides source table branching through Silver mappings into sales invoice, party roles, and invoice relationship entities, which then support a Gold invoice dimension." width="1600" style="max-width: 100%; height: auto;">
   <figcaption>Figure 1. A single invoice source can be mapped into several reusable UDM entities and relationships that support downstream Gold models.</figcaption>
 </figure>
 

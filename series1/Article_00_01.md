@@ -1,3 +1,17 @@
+---
+title: The Journey to an AI-Ready Data Warehouse
+tags:
+  - ontology
+  - dbt
+  - AI
+  - medallion architecture
+  - fabric
+intended-audience: 
+- manager
+- practitioner
+
+---
+
 <!-- REVIEW:START -->
 > ## Review
 >
@@ -25,13 +39,16 @@
 > _Reviewed against: 01_project_summary, 02_core_principles, 05_style_and_voice, 06_content_boundaries. Date: 2026-09-06._
 <!-- REVIEW:END -->
 
-Intended audience: both manager and practitioner
-
-
 # The Journey to an AI-Ready Data Warehouse
-This series explains why we began a major restructuring of our legacy data warehouse, how we approached it and how we implemented the restructuring. 
+*How can an AI-ready data warehouse improve analytics without losing the business meaning behind the data? We’re restructuring a legacy data warehouse around a canonical Core Data Model—and sharing the architectural decisions, lessons, and implementation using dbt and Microsoft Fabric.*
 
-The series will also identify what we learned along the way. What works, what does not work. 
+This series explains why we began a major restructuring of our legacy data warehouse, how we approached it and how we implemented the restructuring. The series will also identify what we learned along the way, what works, what does not work. 
+
+<figure>
+  <img src="assets/Article_00_01/fig-03-transformation-journey.png" alt="A horizontal transformation journey from a legacy warehouse through a canonical core data model and YAML-based layers to generated data structures, documentation, and AI-ready analytics." width="1200" style="max-width: 100%; height: auto;">
+  <figcaption>Figure 3. The journey builds an AI-ready data foundation by making business meaning explicit and carrying it through modelling, generation, and documentation.</figcaption>
+</figure>
+
 
 ## The AI era
 We have all read of ambitious promises about AI. Machines will answer questions before we ask them, automate work, and remove people from processes. These predictions shape how organisations think about the immediate future. At conferences for data professionals, many presentations show what AI can do with data. AI can handle data and provide answers, but the demonstrations often use simple data structures that do not reflect the complexity of a real business environment.
@@ -40,9 +57,12 @@ We have all read of ambitious promises about AI. Machines will answer questions 
 The central question we must find an answer for is how we can use AI to improve the quality of analytics work, increase the throughput of business requests, and reduce the time and cost involved. The practical question is what we must do to structure enterprise data so that it provides AI with the meaning it needs to deliver those benefits.
 
 ### The medallion architecture
+<figure>
+  <img src="assets/Article_00_01/fig-01-medallion-gap.png" alt="A three-layer medallion flow showing Bronze ingestion, Silver business transformation, and Gold consumption, with a separate note identifying the data shapes, rules, relationships, and documentation that make information meaning explicit." width="1200" style="max-width: 100%; height: auto;">
+  <figcaption>Figure 1. Bronze, Silver, and Gold define transformation stages; explicit information architecture defines data shape, relationships, and meaning.</figcaption>
+</figure>
 
 The medallion architecture is the most wildely used by data practitioners. In this architecture the process of transforming data into information focuses on dividing the process into three distinct phases:
-
 - bronze: the layer where data is ingested with minimal conversion
 - silver: the layer where source data is translated into business structures and transformed for BI and data science
 - gold: the layer consumed by reporting, analytics, and other end-user tools
@@ -50,11 +70,6 @@ The medallion architecture is the most wildely used by data practitioners. In th
 The medallion architecture is a process architecture: it tells you where transformation occurs, not what the data should look like. What it lacks is an information architecture — a defined shape for each layer, with explicit rules, a specified input and output, and documentation that both people and machines can read.
 
 A medallion architecture is often implemented as a free-form transition from source systems to gold structures. For years, teams were told that this did not matter: structure slowed delivery, new information had to be created quickly, structure by structure.
-
-<figure>
-  <img src="assets/Article_00_01/fig-01-medallion-gap.png" alt="A three-layer medallion flow showing Bronze ingestion, Silver business transformation, and Gold consumption, with a separate note identifying the data shapes, rules, relationships, and documentation that make information meaning explicit." width="700" style="max-width: 100%; height: auto;">
-  <figcaption>Figure 1. Bronze, Silver, and Gold define transformation stages; explicit information architecture defines data shape, relationships, and meaning.</figcaption>
-</figure>
 
 ### Lacking documentation
 Legacy source systems often have cryptic table and attribute names. They offer little information about relationships. The relationships exist, but they are often not described. Knowledge of their meaning is assumed. Measures are often sparsely described and can have different meanings in different contexts.
@@ -71,7 +86,6 @@ The requirements of LLMs make what was once optional or an afterthought essentia
 - all the data needs to be fully described in natural language
 
 ### The enhanced medallion architecture
-
 This means that we must enhance the medallion architecture with the following requirements:
 
 1. The bronze layer preserves source data in a predefined structure. It needs to be historized.
@@ -82,16 +96,16 @@ This means that we must enhance the medallion architecture with the following re
 
 What we end up with is:
 
-- bronze: the ingestion layer, with source data held in a defined and historised format
-- silver: the layer that translates source-system data into the canonical model and adds business meaning
-- core data model: the fully documented canonical model where the new business structure resides
-- gold engineering: the layer that transforms the canonical model into structures ready for BI and data science tools
-- gold: the end-user layer, where fully described metrics and KPIs are available for consumption
+- **bronze:** the ingestion layer, with source data held in a defined and historised format
+- **silver:** the layer that translates source-system data into the canonical model and adds business meaning
+- **core data model:** the fully documented canonical model where the new business structure resides
+- **gold engineering:** the layer that transforms the canonical model into structures ready for BI and data science tools
+- **gold:** the end-user layer, where fully described metrics and KPIs are available for consumption
 
 The additional layers make responsibilities and handoffs clearer for people and AI systems. It decouples the ingestion of data from the presentation of data. It limits interdependencies and allows working on the layers simultaneously.  
 
 <figure>
-  <img src="assets/Article_00_01/fig-02-enhanced-medallion.png" alt="A five-layer architecture showing defined, historised source data flowing through source-to-canonical mapping, a documented Core Data Model, Gold Engineering, and Gold, where end users consume described metrics and KPIs." width="700" style="max-width: 100%; height: auto;">
+  <img src="assets/Article_00_01/fig-02-enhanced-medallion.png" alt="A five-layer architecture showing defined, historised source data flowing through source-to-canonical mapping, a documented Core Data Model, Gold Engineering, and Gold, where end users consume described metrics and KPIs." width="1200" style="max-width: 100%; height: auto;">
   <figcaption>Figure 2. A documented Core Data Model separates source-to-canonical mapping from the preparation of data for BI, data science, and end-user metrics.</figcaption>
 </figure>
 
@@ -112,7 +126,6 @@ Consider an organization that is a customer and later becomes a supplier. A sour
 The same pattern applies to people. One person can be an Employee, an Applicant, and an Inventor without duplicating their identity or contact details. The Party entity holds the common identity and relationships; Party Role records the context in which the person or organization participates. A subtype is added only when a particular form of Party has durable attributes or relationships that do not apply to other Parties.
 
 ## The journey
-
 We began a project to prepare the data warehouse for this AI era.
 
 ### Adding a core data model 
@@ -129,44 +142,40 @@ We wanted to make the project as portable as possible, so we used YAML and Draw.
 #### The conceptual layer YAML
 The conceptual layer contains:
 
+```yaml
 - entity names
 - labels
 - descriptions
 - entity types
-
 - fully described relationships
-  - relationship names
-  - labels
-  - source entities
-  - target entities
-  - cardinality
+    - relationship names
+    - labels
+    - source entities
+    - target entities
+    - cardinality
+```
 
 #### The logical layer YAML
 The logical layer is kept in sync with the conceptual layer. It contains all the information from the conceptual layer but adds:
 
-- derived-from links to identify the conceptual property each logical element implements
+```yaml
+- derived-from-conceptual 
 - primary keys
 - business keys
 - historisation rules
-
 - fully described attributes
-  - attribute names
-  - attribute descriptions
-  - data types
-  - confidentiality flag
-
+    - attribute names
+    - attribute descriptions
+    - data types
+    - confidentiality flag
+```
 ### Automation with Python and AI
-
 Plain YAML files, a helper application developed in Python, and AI skills support the creation of new entities and synchronisation between layers. The data model remains central, while AI and Python help automate the generation of physical structures and dbt models.
 
 Draw.io and Markdown describe and present the model. A generated OKF bundle grounds AI and serves as the authoritative description of the core data model.
 
 This combination allows us to reduce dependence on legacy modelling tools while still working efficiently. 
 
-<figure>
-  <img src="assets/Article_00_01/fig-03-transformation-journey.png" alt="A horizontal transformation journey from a legacy warehouse through a canonical core data model and YAML-based layers to generated data structures, documentation, and AI-ready analytics." width="700" style="max-width: 100%; height: auto;">
-  <figcaption>Figure 3. The journey builds an AI-ready data foundation by making business meaning explicit and carrying it through modelling, generation, and documentation.</figcaption>
-</figure>
 
 ### Microsoft warehouse with dbt as the physical implementation
 The whole process is implemented as a Microsoft Fabric warehouse. The transformation processes are implemented in dbt.  
@@ -187,24 +196,20 @@ It hopes to help other professionals who want to make the same journey, but also
 ## What we wanted AI to enable with the transformation
 The foundation described in this series was designed to give AI the context and structure needed to work with enterprise data. We wanted it to enable:
 
-- semantic grounding for text-to-SQL and natural-language querying, reducing confident but incorrect answers
-- AI assistance in designing and maintaining a high-quality data model
-- faster source onboarding through source-to-concept mapping
+- **semantic grounding** for text-to-SQL and natural-language querying, reducing confident but incorrect answers
+- **AI assistance** in designing and maintaining a high-quality data model
+- **faster source onboarding** through source-to-concept mapping
 - broader participation in data-platform work by reducing dependence on scarce specialist knowledge
-- dynamic Gold models and on-demand analytical structures
-- living documentation and a knowledge graph that remain useful to people and AI tools
-
+- **dynamic Gold models** and on-demand analytical structures
+- **living documentation** and a knowledge graph that remain useful to people and AI tools
 
 ## The tracks
-It is structured into four tracks. 
+It is structured into four tracks: 
 
-The first track focuses on why particular architectural decisions were made. Many options are available, and this track explains the thinking behind the choices.
-
-The second track focuses on the model and the toolchain. It details how to create a YAML-based data model with conceptual, logical, and physical layers, and how that model can generate structures in Microsoft Fabric and dbt.
-
-The third track explains how AI is used in this new environment
-
-The fourth track focuses on the dbt and Microsoft Fabric implementation.
+- The first track focuses on why particular architectural decisions were made. Many options are available, and this track explains the thinking behind the choices.
+- The second track focuses on the model and the toolchain. It details how to create a YAML-based data model with conceptual, logical, and physical layers, and how that model can generate structures in Microsoft Fabric and dbt.
+- The third track explains how AI is used in this new environment
+- The fourth track focuses on the dbt and Microsoft Fabric implementation.
 
 The articles are written from the perspective of a practitioner who has made the choices, lives with the consequences, and is still working through the details. Nothing here is presented as the only right answer. The goal is to share a coherent, working approach and to give other professionals enough to evaluate, adapt, and build on.
 

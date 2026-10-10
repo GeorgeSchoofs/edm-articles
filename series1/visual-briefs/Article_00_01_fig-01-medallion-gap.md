@@ -68,11 +68,13 @@ A three-layer medallion flow showing Bronze ingestion, Silver business transform
 
 ## Article figure reference
 
+Measured PNG: 516 x 696 px. HTML display width: 1200. Flagged for re-export from the editable or vector source because the PNG is below 1200 px wide; do not upscale the bitmap.
+
 Article: [Article_00_01](../Article_00_01.md). Placement: after the final paragraph of "The medallion architecture".
 
 ```html
 <figure>
-  <img src="assets/Article_00_01/fig-01-medallion-gap.png" alt="A three-layer medallion flow showing Bronze ingestion, Silver business transformation, and Gold consumption, with a separate note identifying the data shapes, rules, relationships, and documentation that make information meaning explicit." width="700" style="max-width: 100%; height: auto;">
+  <img src="assets/Article_00_01/fig-01-medallion-gap.png" alt="A three-layer medallion flow showing Bronze ingestion, Silver business transformation, and Gold consumption, with a separate note identifying the data shapes, rules, relationships, and documentation that make information meaning explicit." width="1200" style="max-width: 100%; height: auto;">
   <figcaption>Figure 1. Bronze, Silver, and Gold define transformation stages; explicit information architecture defines data shape, relationships, and meaning.</figcaption>
 </figure>
 ```

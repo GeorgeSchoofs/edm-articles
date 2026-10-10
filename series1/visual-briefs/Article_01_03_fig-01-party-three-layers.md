@@ -84,11 +84,13 @@ A three-stage diagram follows Party through the conceptual, logical, and physica
 
 ## Article figure reference
 
+Measured PNG: 652 x 432 px. HTML display width: 1200. Flagged for re-export from the editable or vector source because the PNG is below 1200 px wide; do not upscale the bitmap.
+
 Article: [Article_01_03](../Article_01_03.md). Placement: after the introductory explanation of the controlled generation path, before "One example across the layers: Party".
 
 ```html
 <figure>
-  <img src="assets/Article_01_03/fig-01-party-three-layers.png" alt="A three-stage diagram follows Party through the conceptual, logical, and physical layers. The conceptual layer defines business concepts and relationships, the logical layer adds attributes, keys, mappings, and history rules, and the physical layer adds target-specific types, hashes, tables, and ETL fields." width="700" style="max-width: 100%; height: auto;">
+  <img src="assets/Article_01_03/fig-01-party-three-layers.png" alt="A three-stage diagram follows Party through the conceptual, logical, and physical layers. The conceptual layer defines business concepts and relationships, the logical layer adds attributes, keys, mappings, and history rules, and the physical layer adds target-specific types, hashes, tables, and ETL fields." width="1200" style="max-width: 100%; height: auto;">
   <figcaption>Figure 1. The Party concept moves from business vocabulary to a complete semantic contract and then to a target-specific implementation.</figcaption>
 </figure>
 ```

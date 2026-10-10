@@ -350,21 +350,41 @@ Use this format for Markdown articles:
 
 ```markdown
 <figure>
-  <img src="assets/<ArticleStem>/<FigureId>.png" alt="<Suggested alt text from the brief>" width="700" style="max-width: 100%; height: auto;">
+  <img src="assets/<ArticleStem>/<FigureId>.png" alt="<Suggested alt text from the brief>" width="1600" style="max-width: 100%; height: auto;">
   <figcaption><Suggested caption from the brief></figcaption>
 </figure>
 ```
 
-Use `width="700"` with `style="max-width: 100%; height: auto;"` as the default
-display sizing for both Napkin and designer-produced figures. This displays the
-image at 700 CSS pixels when space permits, shrinks it to fit narrower containers,
-and preserves its aspect ratio. Do not set a fixed height. Preserve an explicitly
-requested custom display size when refreshing an existing figure.
+Select the HTML display width from the actual PNG pixel width for both Napkin
+and designer-produced figures:
+
+| Actual PNG width | HTML width attribute | Action |
+|---|---|---|
+| Below 1200 px | `width="1200"` | Flag for re-export from the editable or vector source; do not upscale the bitmap |
+| 1200-1599 px | `width="1200"` | Retain the asset at its native resolution |
+| 1600 px or more | `width="1600"` | Retain the asset at its native resolution |
+| Asset pending | `width="1600"` | Provisional default; reassess actual width after export |
+
+The cutoff between the two display widths is 1600 source pixels. The 1200 px
+re-export threshold is a series production recommendation, distinct from Medium's
+1192 px threshold for all placement options. Report dimensions and pending
+re-exports; a small asset is not an export failure solely because of its width.
+
+Always retain `style="max-width: 100%; height: auto;"`. The selected width is
+the preferred CSS-pixel display width when space permits; narrower containers
+shrink the image while preserving its aspect ratio. It does not increase bitmap
+resolution, and displaying a small bitmap in a wider container can blur it.
+Do not set a fixed height. Preserve an explicitly requested custom display size
+when refreshing an existing figure. Keep the brief's reference block and the
+article's matching block consistent.
 
 These attributes control presentation, not PNG export resolution or Napkin's
 manual resolution multiplier. They are retained in the exported HTML, but Medium
 may replace or ignore them during import and apply its own image layout. Verify
-the imported draft rather than promising an exact Medium display width.
+the imported draft rather than promising an exact Medium display width. The
+publication site's 680 px body maximum also limits displayed figure width; changing
+the image width attribute alone does not make a figure span 1200 or 1600 px there.
+Continue checking readability at approximately 700 px and 350 px preview widths.
 
 Place each figure directly after the paragraph or section it supports. For a table
 visual, place it immediately before the Markdown table and retain that table as the
