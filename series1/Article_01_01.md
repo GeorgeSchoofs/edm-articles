@@ -43,6 +43,7 @@ intended-audience:
 *The medallion architecture is a popular data warehouse design, but Bronze, Silver, and Gold layers alone don’t define what business data should mean or how it can be reused. This enhanced medallion architecture adds a canonical Core Data Model and clear data contracts to make analytics more consistent, adaptable, and easier to build*
 
 The medallion architecture is one of the most recognisable architecture models used by data practitioners:
+
 - Bronze: ingestion
 - Silver: transformation
 - Gold: analysis
@@ -50,6 +51,11 @@ The medallion architecture is one of the most recognisable architecture models u
 The medallion architecture describes where steps from source to target structures should be modelled. It gives each layer a place in the lifecycle, but leaves much of the responsibility for structure, meaning, and transformation rules to the engineers implementing it.
 
 This creates a problem for a changing data warehouse. Changes require knowledge of existing structures and dependencies, and a lack of shared structure can lead to duplicated models and fragile downstream relationships. AI can help with coding and reasoning, but it needs explicit structure and documentation to produce reliable results.
+
+<figure>
+  <img src="assets/Article_01_01/fig-01-enhanced-medallion.png" alt="A five-layer architecture showing defined, historised source data flowing through source-to-canonical mapping, a documented Core Data Model, Gold Engineering, and Gold, where end users consume described metrics and KPIs." width="1200" style="max-width: 100%; height: auto;">
+  <figcaption>Figure 1. A documented Core Data Model separates source-to-canonical mapping from the preparation of data for BI, data science, and end-user metrics.</figcaption>
+</figure>
 
 The proposed architecture adds the following components:
 - an enhanced Bronze layer that preserves source data under a clear contract
@@ -60,8 +66,8 @@ The proposed architecture adds the following components:
 Each layer has a separate responsibility and a defined handoff to the next layer:
 
 <figure>
-  <img src="assets/Article_01_01/fig-01-layer-contracts.png" alt="A five-row architecture map reproducing the article's table verbatim. Bronze, Silver, Core Data Model, Gold Engineering, and Gold are listed in order, with each layer's responsibilities and guarantees shown in separate columns." width="1600" style="max-width: 100%; height: auto;">
-  <figcaption>Figure 1. Each layer owns a distinct responsibility and provides a defined guarantee to the next stage of the enhanced medallion architecture.</figcaption>
+  <img src="assets/Article_01_01/fig-02-layer-contracts.png" alt="A five-row architecture map reproducing the article's table verbatim. Bronze, Silver, Core Data Model, Gold Engineering, and Gold are listed in order, with each layer's responsibilities and guarantees shown in separate columns." width="1600" style="max-width: 100%; height: auto;">
+  <figcaption>Figure 2. Each layer owns a distinct responsibility and provides a defined guarantee to the next stage of the enhanced medallion architecture.</figcaption>
 </figure>
 
 <!-- MEDIUM:EXCLUDE:START -->
@@ -76,6 +82,7 @@ Each layer has a separate responsibility and a defined handoff to the next layer
 
 ### The cost of the additional structure
 The additional layers introduce real delivery and governance costs:
+
 - modelling effort is required to define canonical entities, relationships, keys, and history behaviour before implementation can begin
 - every source requires a governed mapping into the Core Data Model, including decisions about meaning, grain, identity, and missing values
 - contracts and documentation must be versioned, reviewed, validated, and kept aligned with generated physical
@@ -91,6 +98,7 @@ The trade-offs are worthwhile when the warehouse serves multiple sources, busine
 The Bronze layer is where source data lands. Its purpose is to preserve source fidelity while providing consistent metadata and history for downstream processing.
 
 The Bronze layer has the following requirements:
+
 - preserve a permanent store of source data and its history
 - capture source changes, including soft and hard deletes
 - minimise modifications to source structures
@@ -114,7 +122,7 @@ select
     a.[load_datetime],
     a.[process_run_id],
     a.[record_source]
-from [eq_wal_products_myprompts_billguides] a
+from [invoices] a
 ```
 ### The new canonical (Core) Data Model
 The Core Data Model is the heart of the architecture. It contains structures with defined business meaning, relationships, keys, and history behaviour.
@@ -178,16 +186,13 @@ A single source table can provide data for several Core entities. For example, a
 This gives Silver a consistent responsibility: source interpretation happens in Silver, while canonical business meaning is defined and governed by the Core Data Model.
 
 #### The silver example
-The billguides table contains the following attributes:
+The invoices table contains the following attributes:
 - [id] --> surrogate key in source system 
 - [sid] --> id for the debtor (a party in a role)
 - [setupdate] --> the date invoice has been setup (an attribute of the invoice)
 - [invoicedate] --> the date of the invoice (an attribute of the invoice)
 - [invoice] --> invoice number (an attribute of the invoice)
 - [currency] --> currency of invoice (an attribute of the invoice)
-- [workingin_currency] --> original currency of source (an attribute of the invoice)
-- [workingin_amount] --> original amount (an attribute of the invoice)
-- [workingin_rate] --> original currency rate (an attribute of the invoice)
 - [user] --> the user who has processed the invoice (a party in a role)
 - [legal_entity] --> the id of the issuer of the invoice (a party in a role)
 - [credited] --> flag indicating if the invoice was credited 
@@ -195,8 +200,8 @@ The billguides table contains the following attributes:
 
 This one table feeds several canonical entities:
 <figure>
-  <img src="assets/Article_01_01/fig-02-source-to-core-mapping.png" alt="A six-row mapping from Bronze invoice attributes to Core targets. Invoice fields map to sales invoice, whopays and legal entity each map to party and sales invoice party roles, and credited fields map to a sales invoice relationship." width="1600" style="max-width: 100%; height: auto;">
-  <figcaption>Figure 2. One Bronze invoice row supplies invoice identity, party roles, and relationships to several Core targets.</figcaption>
+  <img src="assets/Article_01_01/fig-03-source-to-core-mapping.png" alt="A six-row mapping from Bronze invoice attributes to Core targets. Invoice fields map to sales invoice, whopays and legal entity each map to party and sales invoice party roles, and credited fields map to a sales invoice relationship." width="1600" style="max-width: 100%; height: auto;">
+  <figcaption>Figure 3. One Bronze invoice row supplies invoice identity, party roles, and relationships to several Core targets.</figcaption>
 </figure>
 
 <!-- MEDIUM:EXCLUDE:START -->
@@ -226,7 +231,7 @@ select
     a.record_source,
     a.load_datetime,
     a.cdc
-from bronze_billguides a
+from bronze_invoices a
 ```
 The output conforms to the `sales_invoice` contract. The source-specific mapping supplies the values; the target structure comes from the predefined template.
 
@@ -238,7 +243,7 @@ select
     party_id,
     role_name,
     party_type
-from bronze_billguides
+from bronze_invoices
 unpivot (
     party_id for source_attribute in (whopays, legal_entity)
 ) roles

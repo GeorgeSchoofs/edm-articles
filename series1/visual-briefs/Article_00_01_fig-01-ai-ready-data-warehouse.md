@@ -1,7 +1,7 @@
-# Article_00_01.fig-03-transformation-journey
+# Article_00_01.fig-04-transformation-journey
 
 Article: Article_00_01
-Figure: fig-03-transformation-journey
+Figure: fig-01-ai-ready-data-warehouse
 Audience: Both
 Status: Generated
 
@@ -13,7 +13,6 @@ Show the transformation journey from a legacy warehouse to an AI-ready data foun
 
 Sections: "The journey," "Adding a canonical (core) data model," "YAML structures used to model the core data model," and "Automation with Python and AI."
 
-The journey begins with a legacy warehouse. A canonical core data model is added, source ingestion routes into that model, and gold models use it as their source. The model is expressed through conceptual, logical, and physical YAML-based layers. Python and AI skills help generate physical structures and dbt models, while Draw.io and Markdown present the model. An OKF bundle serves as the authoritative description used to ground AI.
 
 ## Visual shape
 
@@ -27,27 +26,15 @@ Paste only the following fenced text block into Napkin.ai.
 From legacy warehouse to AI-ready data foundation
 
 LEGACY WAREHOUSE
-Existing source-shaped structures
 →
 CANONICAL CORE DATA MODEL
-Shared business concepts and relationships
 →
 YAML MODEL LAYERS
-- Conceptual
-- Logical
-- Physical
 ↔
 GENERATED STRUCTURES AND DOCUMENTATION
-- Physical structures
-- dbt models
-- Draw.io and Markdown
-- Authoritative OKF bundle
 →
-AI-READY ANALYTICS
-Analytics grounded in explicit business meaning
+AI-READY DATA WAREHOUSE
 
-ENABLERS
-Python automation + AI skills
 ```
 
 ## Must include
@@ -75,7 +62,7 @@ A horizontal transformation journey from a legacy warehouse through a canonical 
 
 ## Export target
 
-`series1/assets/Article_00_01/fig-03-transformation-journey.png`
+`series1/assets/Article_00_01/fig-1-ai-ready-data-warehouse.png`
 
 ## Article figure reference
 
@@ -85,7 +72,7 @@ Article: [Article_00_01](../Article_00_01.md). Placement: after the final paragr
 
 ```html
 <figure>
-  <img src="assets/Article_00_01/fig-03-transformation-journey.png" alt="A horizontal transformation journey from a legacy warehouse through a canonical core data model and YAML-based layers to generated data structures, documentation, and AI-ready analytics." width="1200" style="max-width: 100%; height: auto;">
-  <figcaption>Figure 3. The journey builds an AI-ready data foundation by making business meaning explicit and carrying it through modelling, generation, and documentation.</figcaption>
+  <img src="assets/Article_00_01/fig-1-ai-ready-data-warehouse.png" alt="A horizontal  journey from a legacy warehouse through a canonical core data model and YAML-based layers to generated data structures, documentation, and AI-ready data warehouse." width="1200" style="max-width: 100%; height: auto;">
+  <figcaption>Figure 1 The journey builds an AI-ready data foundation by making business meaning explicit and carrying it through modelling, generation, and documentation.</figcaption>
 </figure>
 ```

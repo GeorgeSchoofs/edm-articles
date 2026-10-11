@@ -1,7 +1,7 @@
-# Article_00_01.fig-01-medallion-gap
+# Article_00_01.fig-02-medallion-gap
 
 Article: Article_00_01
-Figure: fig-01-medallion-gap
+Figure: fig-02-medallion-gap
 Audience: Both
 Status: Generated
 
@@ -74,7 +74,7 @@ Article: [Article_00_01](../Article_00_01.md). Placement: after the final paragr
 
 ```html
 <figure>
-  <img src="assets/Article_00_01/fig-01-medallion-gap.png" alt="A three-layer medallion flow showing Bronze ingestion, Silver business transformation, and Gold consumption, with a separate note identifying the data shapes, rules, relationships, and documentation that make information meaning explicit." width="1200" style="max-width: 100%; height: auto;">
-  <figcaption>Figure 1. Bronze, Silver, and Gold define transformation stages; explicit information architecture defines data shape, relationships, and meaning.</figcaption>
+  <img src="assets/Article_00_01/fig-02-medallion-gap.png" alt="A three-layer medallion flow showing Bronze ingestion, Silver business transformation, and Gold consumption, with a separate note identifying the data shapes, rules, relationships, and documentation that make information meaning explicit." width="1200" style="max-width: 100%; height: auto;">
+  <figcaption>Figure 2. Bronze, Silver, and Gold define transformation stages; explicit information architecture defines data shape, relationships, and meaning.</figcaption>
 </figure>
 ```

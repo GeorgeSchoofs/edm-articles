@@ -1,7 +1,7 @@
-# Article_00_01.fig-02-enhanced-medallion
+# Article_00_01.fig-03-enhanced-medallion
 
 Article: Article_00_01
-Figure: fig-02-enhanced-medallion
+Figure: fig-03-enhanced-medallion
 Audience: Both
 Status: Generated
 
@@ -84,7 +84,7 @@ Article: [Article_00_01](../Article_00_01.md). Placement: after the paragraph ex
 
 ```html
 <figure>
-  <img src="assets/Article_00_01/fig-02-enhanced-medallion.png" alt="A five-layer architecture showing defined, historised source data flowing through source-to-canonical mapping, a documented Core Data Model, Gold Engineering, and Gold, where end users consume described metrics and KPIs." width="1200" style="max-width: 100%; height: auto;">
-  <figcaption>Figure 2. A documented Core Data Model separates source-to-canonical mapping from the preparation of data for BI, data science, and end-user metrics.</figcaption>
+  <img src="assets/Article_00_01/fig-03-enhanced-medallion.png" alt="A five-layer architecture showing defined, historised source data flowing through source-to-canonical mapping, a documented Core Data Model, Gold Engineering, and Gold, where end users consume described metrics and KPIs." width="1200" style="max-width: 100%; height: auto;">
+  <figcaption>Figure 3. A documented Core Data Model separates source-to-canonical mapping from the preparation of data for BI, data science, and end-user metrics.</figcaption>
 </figure>
 ```

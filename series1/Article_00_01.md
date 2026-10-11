@@ -45,8 +45,8 @@ intended-audience:
 This series explains why we began a major restructuring of our legacy data warehouse, how we approached it and how we implemented the restructuring. The series will also identify what we learned along the way, what works, what does not work. 
 
 <figure>
-  <img src="assets/Article_00_01/fig-03-transformation-journey.png" alt="A horizontal transformation journey from a legacy warehouse through a canonical core data model and YAML-based layers to generated data structures, documentation, and AI-ready analytics." width="1200" style="max-width: 100%; height: auto;">
-  <figcaption>Figure 3. The journey builds an AI-ready data foundation by making business meaning explicit and carrying it through modelling, generation, and documentation.</figcaption>
+  <img src="assets/Article_00_01/fig-1-ai-ready-data-warehouse.png" alt="A horizontal  journey from a legacy warehouse through a canonical core data model and YAML-based layers to generated data structures, documentation, and AI-ready data warehouse." width="1200" style="max-width: 100%; height: auto;">
+  <figcaption>Figure 1 The journey builds an AI-ready data foundation by making business meaning explicit and carrying it through modelling, generation, and documentation.</figcaption>
 </figure>
 
 
@@ -58,8 +58,8 @@ The central question we must find an answer for is how we can use AI to improve 
 
 ### The medallion architecture
 <figure>
-  <img src="assets/Article_00_01/fig-01-medallion-gap.png" alt="A three-layer medallion flow showing Bronze ingestion, Silver business transformation, and Gold consumption, with a separate note identifying the data shapes, rules, relationships, and documentation that make information meaning explicit." width="1200" style="max-width: 100%; height: auto;">
-  <figcaption>Figure 1. Bronze, Silver, and Gold define transformation stages; explicit information architecture defines data shape, relationships, and meaning.</figcaption>
+  <img src="assets/Article_00_01/fig-02-medallion-gap.png" alt="A three-layer medallion flow showing Bronze ingestion, Silver business transformation, and Gold consumption, with a separate note identifying the data shapes, rules, relationships, and documentation that make information meaning explicit." width="1200" style="max-width: 100%; height: auto;">
+  <figcaption>Figure 2. Bronze, Silver, and Gold define transformation stages; explicit information architecture defines data shape, relationships, and meaning.</figcaption>
 </figure>
 
 The medallion architecture is the most wildely used by data practitioners. In this architecture the process of transforming data into information focuses on dividing the process into three distinct phases:
@@ -85,7 +85,7 @@ The requirements of LLMs make what was once optional or an afterthought essentia
 - relationships between entities become primary citizens and far more important than in the past
 - all the data needs to be fully described in natural language
 
-### The enhanced medallion architecture
+
 This means that we must enhance the medallion architecture with the following requirements:
 
 1. The bronze layer preserves source data in a predefined structure. It needs to be historized.
@@ -94,7 +94,13 @@ This means that we must enhance the medallion architecture with the following re
 5. Documentation describes the structures and data in a form that links the data to LLMs and supports reasoning.
 6. Gold models use the core data model as their source, which requires additional transformation steps.
 
+### The enhanced medallion architecture
 What we end up with is:
+
+<figure>
+  <img src="assets/Article_00_01/fig-03-enhanced-medallion.png" alt="A five-layer architecture showing defined, historised source data flowing through source-to-canonical mapping, a documented Core Data Model, Gold Engineering, and Gold, where end users consume described metrics and KPIs." width="1200" style="max-width: 100%; height: auto;">
+  <figcaption>Figure 3. A documented Core Data Model separates source-to-canonical mapping from the preparation of data for BI, data science, and end-user metrics.</figcaption>
+</figure>
 
 - **bronze:** the ingestion layer, with source data held in a defined and historised format
 - **silver:** the layer that translates source-system data into the canonical model and adds business meaning
@@ -104,10 +110,7 @@ What we end up with is:
 
 The additional layers make responsibilities and handoffs clearer for people and AI systems. It decouples the ingestion of data from the presentation of data. It limits interdependencies and allows working on the layers simultaneously.  
 
-<figure>
-  <img src="assets/Article_00_01/fig-02-enhanced-medallion.png" alt="A five-layer architecture showing defined, historised source data flowing through source-to-canonical mapping, a documented Core Data Model, Gold Engineering, and Gold, where end users consume described metrics and KPIs." width="1200" style="max-width: 100%; height: auto;">
-  <figcaption>Figure 2. A documented Core Data Model separates source-to-canonical mapping from the preparation of data for BI, data science, and end-user metrics.</figcaption>
-</figure>
+
 
 Central to this enhanced medallion architecture is a data model based on universal business concepts and the principles set out by Len Silverston in his Universal Data Models.
 
@@ -126,6 +129,12 @@ Consider an organization that is a customer and later becomes a supplier. A sour
 The same pattern applies to people. One person can be an Employee, an Applicant, and an Inventor without duplicating their identity or contact details. The Party entity holds the common identity and relationships; Party Role records the context in which the person or organization participates. A subtype is added only when a particular form of Party has durable attributes or relationships that do not apply to other Parties.
 
 ## The journey
+
+<figure>
+  <img src="assets/Article_00_01/fig-04-transformation-journey.png" alt="A horizontal transformation journey from a legacy warehouse through a canonical core data model and YAML-based layers to generated data structures, documentation, and AI-ready analytics." width="1200" style="max-width: 100%; height: auto;">
+  <figcaption>Figure 4. The journey builds an AI-ready data foundation by making business meaning explicit and carrying it through modelling, generation, and documentation.</figcaption>
+</figure>
+
 We began a project to prepare the data warehouse for this AI era.
 
 ### Adding a core data model 
